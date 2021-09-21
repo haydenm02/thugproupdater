@@ -68,14 +68,20 @@ getJSON("http://dl.thugpro.com/current.json", function (current) {
     // Get the data files related to the current version
     getJSON(`http://dl.thugpro.com/update/${current.release}/${current.version}/update.json`, function (update) {
         // Add them all to the file list
+        console.log("Data_files len: " + Object.keys(update.data_files).length);
+        console.log("Other_files len: " + Object.keys(update.other_files).length);
         for (datafile in update.data_files) {
             fileList[datafile] = update.data_files[datafile];
         }
         for (otherfile in update.other_files) {
             fileList[otherfile] = update.other_files[otherfile];
         }
+        console.log("File list len:" + Object.keys(fileList).length);
         // And process them
         verifyFiles();
+        
+        console.log("Queue len: " + fileQueue.length);
+
         processQueue();
     });
 });
@@ -180,17 +186,16 @@ function verifyFiles() {
 function getJSON(url, callback) {
     http.get(url)
     .on("response", function (res) {
-        console.log("Got a response");
         var currentJson = "";
         var len = parseInt(res.headers['content-length'], 10);
         var downloaded = 0;
         res.on("data", function (chunk) {
             currentJson += chunk;
             downloaded += chunk.length;
-            console.log("Downloaded " + (downloaded / len * 100) + "%");
+            //console.log("Downloaded " + (downloaded / len * 100) + "%");
         });
         res.on("end", function () {
-            console.log("Finished downloading: " + typeof currentJson);
+            console.log("Finished");
             callback(JSON.parse(currentJson));
         });
         res.on("error", function (err) {
