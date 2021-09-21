@@ -1,11 +1,3 @@
-/*
-    node filepath
-    this script's file path
-    arg1
-    arg2
-    ...
-*/
-
 if (process.argv.length != 3) {
     console.log("Please give ONLY the folder path!")
     console.log("Given:");
@@ -33,10 +25,7 @@ const path = require("path");
 const fs = require("fs");
 const crc32 = require("crc-32");
 const http = require("http");
-const { verify } = require("crypto");
-
 const folderpath = process.argv[2];
-
 
 if (!fs.existsSync(folderpath)) {
     console.log("Folder does not exist!\nFolder given: " + folderpath);
@@ -76,22 +65,14 @@ getJSON("http://dl.thugpro.com/current.json", function (current) {
         for (otherfile in update.other_files) {
             fileList[otherfile] = update.other_files[otherfile];
         }
-        console.log("File list len:" + Object.keys(fileList).length);
+        console.log("Files to verify: " + Object.keys(fileList).length);
         // And process them
         verifyFiles();
-        
-        console.log("Queue len: " + fileQueue.length);
-
+        console.log("Files to download: " + fileQueue.length);
         processQueue();
+        console.log("That should be all!\nMake sure to disable auto-update (ctrl+alt+d) in the launcher\nAnd enjoy thug! <3");
     });
 });
-
-
-//verifyFiles();
-
-//console.log("Finished checking files, current download list:\n" + JSON.stringify(fileQueue));
-
-//processQueue();
 
 // Queue files to download so we don't try to download all at once
 function processQueue() {
@@ -145,12 +126,9 @@ function processQueue() {
 
 function verifyFiles() {
     for (file in fileList) {
-        //console.log("Checking file: " + file);
         var filepath = path.join(folderpath, file);
-        //console.log("Path: " + filepath);
         if (fs.existsSync(filepath)) {
             // File exists, check hash
-
             // Read the file, get the CRC32 hash of it (signed int)
             var filedata = crc32.buf(fs.readFileSync(filepath));
 
