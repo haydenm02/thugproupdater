@@ -7,3 +7,5 @@ Updates thug pro on linux and windows systems
 3) Run the script providing the path of the THUG Pro install
 
 e.g. `~/.wine-prefix/drive_c/users/username/AppData/Local/Thug Pro` for wine, `%LocalAppData%\Thug Pro` for Windows
+
+Note: make sure to disable auto-updates via THUGProLauncher.exe (CTRL+ALT+D in the Gamepad tab)
