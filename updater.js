@@ -92,7 +92,7 @@ function processQueue(callback) {
     // Make the directory/ies if they do not exist
     if (!fs.existsSync(path.dirname(curFile.location))) fs.mkdirSync(path.dirname(curFile.location), { recursive: true });
 
-    console.log("Downloading file:" + JSON.stringify(curFile));
+    console.log("Downloading file:" + curFile.location);
 
     // Create the write stream for the file
     var writeStream = fs.createWriteStream(curFile.location);
@@ -110,7 +110,7 @@ function processQueue(callback) {
         });
         res.on("end", function () {
             // Get next file
-            processQueue();
+            processQueue(callback);
         });
         res.on("error", function (err) {
             console.log("Failed to download file: " + err);
@@ -120,7 +120,7 @@ function processQueue(callback) {
 
     req.on("error", function (err) {
         console.log("Failed to download\n" + err);
-        processQueue();
+        processQueue(callback);
     });
 
     req.setTimeout(1000);
