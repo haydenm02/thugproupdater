@@ -67,19 +67,22 @@ getJSON("http://dl.thugpro.com/current.json", function (current) {
         }
         console.log("Files to verify: " + Object.keys(fileList).length);
         // And process them
+        // Check if we already have an up-to-date version
         verifyFiles();
         console.log("Files to download: " + fileQueue.length);
-        processQueue();
-        console.log("That should be all!\nMake sure to disable auto-update (ctrl+alt+d) in the launcher\nAnd enjoy thug! <3");
+        // Download missing or non-matching files
+        processQueue(function () {
+            console.log("That should be all!\nMake sure to disable auto-update (ctrl+alt+d) in the launcher gamepad settings\nAnd enjoy thug! <3");
+        });
     });
 });
 
 // Queue files to download so we don't try to download all at once
-function processQueue() {
+function processQueue(callback) {
 
     // Check if we have finished the queue
     if (fileQueue.length == 0) {
-        console.log("Finished updating");
+        callback();
         return;
     }
 
@@ -106,7 +109,7 @@ function processQueue() {
             //console.log("Downloaded " + (downloaded / len * 100) + "%");
         });
         res.on("end", function () {
-            console.log("Finished");
+            // Get next file
             processQueue();
         });
         res.on("error", function (err) {
@@ -173,7 +176,6 @@ function getJSON(url, callback) {
             //console.log("Downloaded " + (downloaded / len * 100) + "%");
         });
         res.on("end", function () {
-            console.log("Finished");
             callback(JSON.parse(currentJson));
         });
         res.on("error", function (err) {
